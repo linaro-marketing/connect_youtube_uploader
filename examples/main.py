@@ -16,6 +16,3 @@ from connect_youtube_uploader import ConnectYoutubeUploader
 video_manager = ConnectYoutubeUploader(
     "")
 updated = video_manager.get_video_id_based_on_session_id("yvr18-100k")
-
-youtube_updater = YouTubeResourceUpdater(
-    "SAN19", "https://linaroconnectsandiego.sched.com", "api-key")
