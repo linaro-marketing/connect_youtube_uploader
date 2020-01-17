@@ -132,7 +132,7 @@ class ConnectYoutubeUploader:
         creds = store.get()
 
         if creds is None or creds.invalid:
-            flow = client.flow_from_clientsecrets(self.CLIENT_SECRETS_FILE,
+            flow = client.flow_from_clientsecrets(self.SECRETS_DIRECTORY + self.CLIENT_SECRETS_FILE,
                                                   scope=self.YOUTUBE_UPLOAD_SCOPE,
                                                   message=self.MISSING_CLIENT_SECRETS_MESSAGE)
             creds = tools.run_flow(flow, store, cmd_flags())
