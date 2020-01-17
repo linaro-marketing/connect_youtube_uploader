@@ -58,7 +58,7 @@ class ConnectYoutubeUploader:
         provided by the SchedDataInterface.
     """
 
-    def __init__(self, client_secrets_file_name):
+    def __init__(self, secrets_dir, client_secrets_file_name):
 
         # Explicitly tell the underlying HTTP transport library not to retry, since
         # we are handling retry logic ourselves.
@@ -76,6 +76,9 @@ class ConnectYoutubeUploader:
 
         # Maximum number of times to retry before giving up.
         self.MAX_RETRIES = 10
+
+        # The secrets secrets_directory
+        self.SECRETS_DIRECTORY = secrets_dir
 
         # The clients secrets file to use when authenticating our requests to the YouTube Data API
         self.CLIENT_SECRETS_FILE = client_secrets_file_name
@@ -123,12 +126,13 @@ class ConnectYoutubeUploader:
             YouTube Data API
         """
 
-        store = file.Storage("connect_youtube_uploader-oauth2.json")
+        store = file.Storage(self.SECRETS_DIRECTORY +
+                             "connect_youtube_uploader-oauth2.json")
 
         creds = store.get()
 
         if creds is None or creds.invalid:
-            flow = client.flow_from_clientsecrets(self.CLIENT_SECRETS_FILE,
+            flow = client.flow_from_clientsecrets(self.SECRETS_DIRECTORY + self.CLIENT_SECRETS_FILE,
                                                   scope=self.YOUTUBE_UPLOAD_SCOPE,
                                                   message=self.MISSING_CLIENT_SECRETS_MESSAGE)
             creds = tools.run_flow(flow, store, cmd_flags())

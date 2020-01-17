@@ -1,3 +1,3 @@
-client_secret*.json
-connect_youtube_uploader-oauth2.json
+*.json
+secrets_dir
 venv/
