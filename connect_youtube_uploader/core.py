@@ -11,6 +11,7 @@ import os
 import httplib2
 import json
 import boto3
+import requests
 
 try:
     import httplib
@@ -150,6 +151,18 @@ class ConnectYoutubeUploader:
             return current_videos[0][1]
         else:
             return False
+
+    def download_video(self, video_url, output_folder):
+        """Downloads a video from video_url and outputs to output_path"""
+        response = requests.get(video_url, stream=True)
+        filename = os.path.split(video_url)[1]
+        print(filename)
+        output_path = output_folder + filename
+        print(output_path)
+        # with open(output_path, "wb") as file_handle:
+        #     for chunk in response.iter_content(chunk_size=512):
+        #         if chunk:  # filter out keep-alive new chunks
+        #             file_handle.write(chunk)
 
     def update_video_status(self, video_id, status):
         """
@@ -393,5 +406,7 @@ class ConnectYoutubeUploader:
 if __name__ == "__main__":
     video_manager = ConnectYoutubeUploader(
         "")
-    updated = video_manager.get_video_id_based_on_session_id("yvr18-100k")
-    print(updated)
+    video_manager.download_video("https://static.linaro.org/connect/bud20/videos/san19-405.mp4",
+                                 "/home/kyle/Documents/scripts_and_snippets/ConnectAutomation/connect_youtube_uploader/output/")
+    # updated = video_manager.get_video_id_based_on_session_id("yvr18-100k")
+    # print(updated)
