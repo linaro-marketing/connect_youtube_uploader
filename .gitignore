@@ -1,0 +1,6 @@
+*.json
+secrets_dir
+venv/
+*__pycache__
+secrets.py
+output/
