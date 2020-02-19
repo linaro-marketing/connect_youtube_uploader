@@ -11,6 +11,7 @@ import os
 import httplib2
 import json
 import boto3
+import requests
 
 try:
     import httplib
@@ -150,6 +151,21 @@ class ConnectYoutubeUploader:
             return current_videos[0][1]
         else:
             return False
+
+    def download_video(self, video_url, output_folder):
+        """Downloads a video from video_url and outputs to output_path"""
+        response = requests.get(video_url, stream=True)
+        filename = os.path.split(video_url)[1]
+        output_path = output_folder + filename
+        if os.path.exists(output_folder) != True:
+            print("Creating {}".format(output_folder))
+            os.makedirs(output_folder)
+        print("Downloading {} to {}".format(filename, output_folder))
+        with open(output_path, "wb") as file_handle:
+            for chunk in response.iter_content(chunk_size=512):
+                if chunk:  # filter out keep-alive new chunks
+                    file_handle.write(chunk)
+        return output_path
 
     def update_video_status(self, video_id, status):
         """
@@ -309,10 +325,10 @@ class ConnectYoutubeUploader:
         # Get the Youtube Tags from the keywords
         tags = None
         try:
-            if options["tags[]"]:
-                tags = options["tags[]"].split(',')
-        except AttributeError:
-            tags = [options["tags[]"]]
+            if options["tags"]:
+                tags = options["tags"].split(',')
+        except Exception as e:
+            tags = []
 
         # Create the body of the request
         body = dict(
@@ -391,7 +407,15 @@ class ConnectYoutubeUploader:
 
 
 if __name__ == "__main__":
-    video_manager = ConnectYoutubeUploader(
-        "")
-    updated = video_manager.get_video_id_based_on_session_id("yvr18-100k")
-    print(updated)
+    video_manager = ConnectYoutubeUploader("", "")
+    # path_to_downloaded_video = video_manager.download_video("https://static.linaro.org/connect/bud20/videos/san19-405.mp4",
+    #                              "/home/kyle/Documents/scripts_and_snippets/ConnectAutomation/connect_youtube_uploader/output/")
+    video_options={
+        "file": "/home/kyle/Documents/scripts_and_snippets/ConnectAutomation/connect_youtube_uploader/output/san19-405.mp4",
+                "title": "BUD20-212: Test video",
+                "description": "Test Video",
+                "keywords": "bud20,Open Source,Arm, budapest",
+                "category": "28",
+                "privacyStatus": "private"
+    }
+    uploaded = video_manager.upload_video(video_options)
