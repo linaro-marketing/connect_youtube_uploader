@@ -161,10 +161,11 @@ class ConnectYoutubeUploader:
             print("Creating {}".format(output_folder))
             os.makedirs(output_folder)
         print("Downloading {} to {}".format(filename, output_folder))
-        with open(output_path, "wb") as file_handle:
-            for chunk in response.iter_content(chunk_size=512):
-                if chunk:  # filter out keep-alive new chunks
-                    file_handle.write(chunk)
+        with open(output_path, 'wb') as f:
+            for chunk in response.iter_content(chunk_size=1024):
+                if chunk: # filter out keep-alive new chunks
+                    f.write(chunk)
+                    f.flush()
         return output_path
 
     def update_video_status(self, video_id, status):
