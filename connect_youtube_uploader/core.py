@@ -317,6 +317,18 @@ class ConnectYoutubeUploader:
 
         return add_to_playlist
 
+
+    def set_custom_thumbnail(self, local_thumbnail_url, video_id):
+        """
+        Sets the specified custom thumbnail for a given video(video_id)
+        """
+        request = self.service.thumbnails().set(
+            videoId=video_id,
+            media_body=MediaFileUpload(local_thumbnail_url)
+        )
+        response = request.execute()
+        return response
+
     def get_upload_request(self, options):
         """
             Create the request to initialize the upload of a video.
@@ -405,18 +417,3 @@ class ConnectYoutubeUploader:
                 print("Sleeping %f seconds and then retrying..." %
                       sleep_seconds)
                 time.sleep(sleep_seconds)
-
-
-if __name__ == "__main__":
-    video_manager = ConnectYoutubeUploader("", "")
-    # path_to_downloaded_video = video_manager.download_video("https://static.linaro.org/connect/bud20/videos/san19-405.mp4",
-    #                              "/home/kyle/Documents/scripts_and_snippets/ConnectAutomation/connect_youtube_uploader/output/")
-    video_options={
-        "file": "/home/kyle/Documents/scripts_and_snippets/ConnectAutomation/connect_youtube_uploader/output/san19-405.mp4",
-                "title": "BUD20-212: Test video",
-                "description": "Test Video",
-                "keywords": "bud20,Open Source,Arm, budapest",
-                "category": "28",
-                "privacyStatus": "private"
-    }
-    uploaded = video_manager.upload_video(video_options)
